@@ -4,7 +4,7 @@ import json
 # BIG-IP device details
 device_ip = '192.168.0.65'
 username = 'admin'
-password = 'karol1985'
+password = 'dummypassword'
 
 # List of BIG-IP devices
 bigip_devices = [
