@@ -1,0 +1,49 @@
+import requests
+
+# Function to get rules managed by Panorama for a specific vsys
+def get_panorama_rules(vsys):
+    # Make API request to Panorama to get rules for the specified vsys
+    response = requests.get(f'https://panorama-api-url/rules?vsys={vsys}')
+    
+    # Parse the response and extract the rules
+    panorama_rules = response.json()['rules']
+    
+    return panorama_rules
+
+# Function to get local policy rules on the firewall for a specific vsys
+def get_local_rules(vsys):
+    # Make API request to the firewall to get local policy rules for the specified vsys
+    response = requests.get(f'https://firewall-api-url/policy/rules?vsys={vsys}')
+    
+    # Parse the response and extract the rules
+    local_rules = response.json()['rules']
+    
+    return local_rules
+
+# Check for duplicated policy rules for a specific vsys
+def check_duplicate_rules(vsys):
+    panorama_rules = get_panorama_rules(vsys)
+    local_rules = get_local_rules(vsys)
+    
+    # Create a set to store the names of the rules
+    rule_names = set()
+    
+    # Check for duplicated rules between panorama_rules and local_rules
+    for rule in panorama_rules:
+        rule_name = rule['name']
+        if rule_name in rule_names:
+            print(f"Rule {rule_name} is duplicated in Panorama for vsys {vsys}.")
+        else:
+            rule_names.add(rule_name)
+    
+    for rule in local_rules:
+        rule_name = rule['name']
+        if rule_name in rule_names:
+            print(f"Rule {rule_name} is duplicated locally on the firewall for vsys {vsys}.")
+        else:
+            rule_names.add(rule_name)
+
+# Call the check_duplicate_rules function for each vsys
+vsys_list = ['vsys1', 'vsys2', 'vsys3']  # Replace with your vsys names
+for vsys in vsys_list:
+    check_duplicate_rules(vsys)
