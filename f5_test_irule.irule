@@ -1,0 +1,14 @@
+when HTTP_REQUEST priority 0 {
+    switch -- [HTTP::uri] {
+        "/old-page" {
+            HTTP::respond 301 Location "https://example.com/new-page"
+        }
+        "/another-page" {
+            HTTP::respond 301 Location "https://example.com/another-page"
+        }
+        default {
+            # Handle other cases or redirect to a default page
+            HTTP::respond 301 Location "https://example.com/default-page"
+        }
+    }
+}
